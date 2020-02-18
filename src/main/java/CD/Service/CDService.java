@@ -1,16 +1,19 @@
-package Service;
+package CD.Service;
 
-import component.LanguageEvaluator;
-import component.PyParserCaller;
+import CD.component.JParserCaller;
+import CD.component.LanguageEvaluator;
+import CD.component.PyParserCaller;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Communication;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.CommunicationRequest;
-import edu.baylor.ecs.cloudhubs.prophetdto.pyparser.PySystem;
-import enums.Language;
+import CD.enums.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CDService {
+
+    @Autowired
+    private JParserCaller jParserCaller;
 
     @Autowired
     private LanguageEvaluator languageEvaluator;
@@ -25,14 +28,7 @@ public class CDService {
         //first figure out what language it is written in
         Language language = languageEvaluator.getModuleLanguage(moduleLocation);
 
-        switch(language){
-            case JAVA:
-                // blah blah
-                return null;
-            case PYTHON:
-                PySystem pySystem = pyParserCaller.getSystem(moduleLocation);
-        }
+        return language == Language.PYTHON ? pyParserCaller.getSystem(moduleLocation) : jParserCaller.getSystem(moduleLocation);
 
-        return null;
     }
 }

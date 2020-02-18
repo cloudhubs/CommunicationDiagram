@@ -1,6 +1,6 @@
-package Controller;
+package CD.Controller;
 
-import Service.CDService;
+import CD.Service.CDService;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Communication;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.CommunicationRequest;
 import org.springframework.beans.factory.annotation.Autowired;

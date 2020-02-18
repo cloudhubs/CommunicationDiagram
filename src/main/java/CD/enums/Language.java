@@ -1,4 +1,4 @@
-package enums;
+package CD.enums;
 
 public enum Language {
     JAVA, PYTHON, OTHER;

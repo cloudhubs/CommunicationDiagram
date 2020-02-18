@@ -1,28 +1,17 @@
-package component;
+package CD.component;
 
-import edu.baylor.ecs.cloudhubs.prophetdto.pyparser.PySystem;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-@Component
-public class PyParserCaller {
+import static CD.constants.PY_PARSER_PARSE_URL;
 
-    public final static String PY_PARSER_BASE_URL = "localhost:8081";
-    public final static String PY_PARSER_PARSE_URL = PY_PARSER_BASE_URL + "/parser";
-
-    public PySystem getSystem(String systemName){
-        Map<String, Object> map = new HashMap<>();
-        map.put("fileName", systemName);
-        return createResponseEntity(PY_PARSER_PARSE_URL, map, PySystem.class);
-    }
+public class Utility {
 
     public static<T> T createResponseEntity(String url, Map<String, Object> contentMap, Class classType){
         HttpHeaders headers = new HttpHeaders();
@@ -35,5 +24,4 @@ public class PyParserCaller {
         ResponseEntity<T> response = restTemplate.getForEntity(PY_PARSER_PARSE_URL, classType, entity);
         return response.getBody();
     }
-
 }
