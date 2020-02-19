@@ -1,4 +1,4 @@
-package CD.component;
+package CD.util;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

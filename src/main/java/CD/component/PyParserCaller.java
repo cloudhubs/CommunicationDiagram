@@ -4,7 +4,7 @@ import edu.baylor.ecs.cloudhubs.prophetdto.communication.Communication;
 import edu.baylor.ecs.cloudhubs.prophetdto.pyparser.PySystem;
 import org.springframework.stereotype.Component;
 
-import static CD.component.Utility.createResponseEntity;
+import static CD.util.Utility.createResponseEntity;
 import static CD.constants.PY_PARSER_PARSE_URL;
 
 import java.util.HashMap;

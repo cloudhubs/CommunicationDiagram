@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import static CD.component.Utility.createResponseEntity;
+import static CD.util.Utility.createResponseEntity;
 import static CD.constants.PY_PARSER_LANGAUGE_URL;
 
 @Component
