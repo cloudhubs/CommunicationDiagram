@@ -2,7 +2,7 @@ package CD.build;
 
 public interface AbstractToken {
 
-    public CD_Token getType();
+    public Instruction getType();
 
     public String toString();
 }

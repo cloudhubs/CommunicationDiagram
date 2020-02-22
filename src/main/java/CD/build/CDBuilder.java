@@ -6,54 +6,90 @@ import edu.baylor.ecs.cloudhubs.prophetdto.communication.Communication;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Edge;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Node;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class CDBuilder {
 
     private Stack<FunctionContext> callStack = new Stack<>();
     private StringStack sequenceNumber = new StringStack();
+    private Set<String> types = new HashSet<>();
+    private Set<Node> nodes = new HashSet<>();
+    private Set<Edge> edges = new HashSet<>();
+    private List<AbstractToken> arguments = new LinkedList<>();
+    private Instruction lastEncounteredInstruction = null;
+    private int tokenCount = 0;
+
     private boolean ifconditionFlag = false;
     private int startFunctionFlag = 0;
     private boolean createVariableFlag = false;
     private String functionArguments = null;
     private String functionObjectBeingCalled = null;
 
-    private Set<Node> nodes = new HashSet<>();
-    private Set<Edge> edges = new HashSet<>();
-
     /**
      * consumes a token
      *
-     * token types:
+     * instruction types:
      *
-     * CREATE: indicates that an object is going to be created
-     *      params: objectType objectName
+     * DEFINE_TYPES: all unrecognized instructions after this are considered class names
+     *
+     * DEFINE_FUNC: creating a function definition
+     *
+     * END_DEFINE_FUNC: ends a function definition
      *
      * START_IF: begins conditional execution of the following code
      *      params: condition
      *
      * END_IF: ends last START_IF
      *
-     * START_ELSE: starts block that will execute if the last IF did not execute
-     *
-     * END_ELSE: ends ELSE block
-     *
-     * START_FUNCTION: indicates that a function is going to be called
+     * CALL_FUNCTION: indicates that a function is going to be called
      *  params: objectName functionName
      *  NOTE: params token must be followed by another START_FUNCTION
      *
-     *  Example:
-     *      START_FUNCTION bar foo START_FUNCTION
-     *
-     * END_FUNCTION: indicates that the function is ending
-     *
      * @param token
      */
-    public void consume(AbstractToken token){
+    public void consume(AbstractToken token) throws BuildException{
+        if(tokenCount == 0){
+            if(token.getType() != Instruction.DEFINE_TYPES){
+                throw new BuildException("First instruction must be DEFINE_TYPES");
+            }
+        }
+        if(token.getType() == Instruction.OTHER){
+            arguments.add(token);
+            return;
+        }
         FunctionContext currentContext = callStack.peek();
 
+        // if not an argument it is another command to execute
+        // therefore execute the last command
+        switch(lastEncounteredInstruction){
+            case DEFINE_TYPES:
+                arguments.forEach(x -> types.add(x.toString()));
+                break;
+            case DEFINE_FUNC:
+                String ownerClass;
+                String methodName;
+                List<AbstractToken> instructions;
+                break;
+            case END_DEFINE_FUNC:
+                break;
+            case DECLARE:
+                break;
+            case CALL_FUNCTION:
+                break;
+            case BEGIN_IF:
+                break;
+            case END_IF:
+                break;
+            case BEGIN_HEADER:
+                break;
+            case END_HEADER:
+                break;
+            case OTHER:
+                break;
+
+        }
+
+        /*
         switch(token.getType()){
 
             // indicates that a variable is being declared
@@ -124,9 +160,9 @@ public class CDBuilder {
                 }
                 break;
         }
+        */
         return;
     }
-
     public Communication build() throws BuildException {
         return null;
     }

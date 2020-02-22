@@ -7,8 +7,8 @@ public class UnrecognizedToken implements AbstractToken {
     private String str;
 
     @Override
-    public CD_Token getType() {
-        return CD_Token.OTHER;
+    public Instruction getType() {
+        return Instruction.OTHER;
     }
 
     public String toString(){
