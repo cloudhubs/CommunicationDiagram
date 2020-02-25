@@ -1,5 +1,8 @@
-package CD.build;
+package CD.build.interpretor;
 
+import CD.build.token.AbstractToken;
+import CD.build.token.Instruction;
+import CD.build.Method;
 import CD.exception.BuildException;
 
 import java.util.HashSet;
@@ -7,8 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static CD.build.Instruction.DEFINE_FUNC;
-import static CD.build.Instruction.END_DEFINE_FUNC;
+import static CD.build.token.Instruction.DEFINE_FUNC;
+import static CD.build.token.Instruction.END_DEFINE_FUNC;
 
 public class HeaderInterpretor {
 

@@ -1,4 +1,4 @@
-package CD.build;
+package CD.build.token;
 
 public interface AbstractToken {
 
