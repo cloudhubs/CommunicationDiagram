@@ -23,7 +23,14 @@ import java.util.Set;
 import static CD.build.token.Instruction.DEFINE_FUNC;
 import static CD.build.token.Instruction.END_DEFINE_FUNC;
 
+/**
+ * Consumes Header tokens
+ *
+ * @author Ian Laird
+ */
 public class HeaderInterpretor {
+
+    // static variables ///////////////////////////////////////////////
 
     // the class name that hold the method should be the first argument
     private static final int METHOD_CLASS_POS = 0;
@@ -33,6 +40,8 @@ public class HeaderInterpretor {
 
     // the first instruction of the method will be the third token following a DEFINE_FUNCTION command
     private static final int METHOD_FIRST_INSTRUCTION_POS = 2;
+
+    // class variables ////////////////////////////////////////////////////
 
     // the tokens seen since the last recognized instruction
     private List<AbstractToken> arguments = new LinkedList<>();
@@ -51,6 +60,8 @@ public class HeaderInterpretor {
 
     // holds all defined methods
     private Set<Method> methods = new HashSet<>();
+
+    //  methods  ////////////////////////////////////////////////////////////
 
     /**
      * consumes a token

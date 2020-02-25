@@ -21,14 +21,33 @@ import edu.baylor.ecs.cloudhubs.prophetdto.communication.Node;
 import java.util.Set;
 import java.util.Stack;
 
+/**
+ * consumes tokens after a BEGIN_PROGRAM has been seen
+ */
 public class ProgramInterpretor {
 
+    // Class variables /////////////////////////////////////////////
+
+    // set if a BEGIN_IF was the last seen token
     private boolean ifconditionFlag;
+
+    // counts how far away from the BEGIN_FUNCTION
     private int startFunctionFlag;
+
+    // set if a CREATE has been seen
     private boolean createVariableFlag;
+
+    // the class name of the method holder
     private String objectName;
+
+    // the method name
     private String methodName;
 
+    ///////////////////////////////////////////////////////////////////
+
+    /**
+     * default constructor
+     */
     public ProgramInterpretor(){
         ifconditionFlag = false;
         startFunctionFlag = 0;

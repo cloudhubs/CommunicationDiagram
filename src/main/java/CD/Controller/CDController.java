@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * CDController
+ *
+ * THe communication diagram controller
+ */
 @RestController
 @RequestMapping("/")
 public class CDController {
@@ -26,6 +31,11 @@ public class CDController {
      @Autowired
      private CDService communicationService;
 
+     /**
+      * creates a communication diagram for a module
+      * @param req the request to fulfill
+      * @return the communication diagram to fulfill
+      */
      @GetMapping("generateDiagram")
      public Communication createCommunicationDiagram(@RequestBody CommunicationRequest req){
           return communicationService.createCommunicationDiagram(req);

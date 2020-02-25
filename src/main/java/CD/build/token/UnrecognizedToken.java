@@ -12,15 +12,30 @@ package CD.build.token;
 
 import lombok.Data;
 
+/**
+ * Non instruction token
+ *
+ * @author Ian laird
+ */
 @Data
 public class UnrecognizedToken implements AbstractToken {
+
+    // holds what the unrecognized token was
     private String str;
 
+    /**
+     * the instruction associated with this type of token is OTHER
+     * @return OTHER
+     */
     @Override
     public Instruction getType() {
         return Instruction.OTHER;
     }
 
+    /**
+     * the token
+     * @return unrecognized string
+     */
     public String toString(){
         return this.str;
     }
