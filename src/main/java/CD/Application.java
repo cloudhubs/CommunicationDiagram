@@ -1,3 +1,13 @@
+/******************************************************************************
+ *
+ * Application.java
+ *
+ * author: Ian laird
+ *
+ * © 2020 CloudHubs
+ *
+ ******************************************************************************/
+
 package CD;
 
 import org.springframework.boot.SpringApplication;

@@ -1,3 +1,13 @@
+/******************************************************************************
+ *
+ * JParserCaller.java
+ *
+ * author: Ian laird
+ *
+ * © 2020 CloudHubs
+ *
+ ******************************************************************************/
+
 package CD.component;
 
 import edu.baylor.ecs.cloudhubs.jparser.component.context.AnalysisContext;
