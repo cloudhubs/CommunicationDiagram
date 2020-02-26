@@ -11,6 +11,7 @@
 package CD.build.token;
 
 import lombok.Data;
+import lombok.NonNull;
 
 /**
  * Non instruction token
@@ -21,6 +22,7 @@ import lombok.Data;
 public class UnrecognizedToken implements AbstractToken {
 
     // holds what the unrecognized token was
+    @NonNull
     private String str;
 
     /**

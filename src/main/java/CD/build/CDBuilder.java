@@ -117,6 +117,18 @@ public class CDBuilder {
     private boolean program_terminated = false;
 
     /**
+     * consumes a string by tokenizing by white space
+     * @param str the string to tokenize
+     * @throws BuildException
+     */
+    public void consume(String str) throws BuildException{
+        String [] tokens = str.split("\\s+");
+        for (String s : tokens){
+            consume(AbstractToken.getTokenFromStr(s));
+        }
+    }
+
+    /**
      * consumes a token
      *
      * @param token
@@ -159,6 +171,6 @@ public class CDBuilder {
      * @throws BuildException if a communication diagram is unable to be built
      */
     public Communication build() throws BuildException {
-        return null;
+        return new Communication(this.nodes, this.edges);
     }
 }

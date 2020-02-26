@@ -49,7 +49,7 @@ public class HeaderInterpretor {
     private boolean firstSeen = true;
 
     // the last encountered instruction
-    private Instruction lastEncounteredInstruction = null;
+    private Instruction lastEncounteredInstruction = DEFINE_TYPES;
 
     // set indicates that BEGIN_PROGRAM has been seen
     private boolean program_begun = false;
@@ -80,14 +80,10 @@ public class HeaderInterpretor {
      */
     public boolean consume(AbstractToken token) throws BuildException{
 
-        // only executes for the first token consumed
-        if(firstSeen){
-            if(token.getType() != DEFINE_TYPES){
-                throw new BuildException("First instruction must be DEFINE_TYPES");
-            }
-            lastEncounteredInstruction = DEFINE_TYPES;
-            firstSeen = false;
+        if((firstSeen && token.getType() != DEFINE_TYPES) || (token.getType() == DEFINE_TYPES)){
+            throw new BuildException("DEFINE_TYPES must be the first instruction and none other");
         }
+        firstSeen = false;
 
         // if this is not an instruction or this instruction is nested within a method declaration save it as an argument
         if((token.getType() == Instruction.OTHER) || ((lastEncounteredInstruction == DEFINE_FUNC) && (token.getType() != END_DEFINE_FUNC))){
@@ -100,6 +96,9 @@ public class HeaderInterpretor {
 
             // for DEFINE_TYPES each argument is a type
             case DEFINE_TYPES:
+                if(arguments.isEmpty()){
+                    throw new BuildException("At least one type must be defined");
+                }
                 arguments.forEach(x -> types.add(x.toString()));
                 break;
 
