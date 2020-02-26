@@ -59,6 +59,9 @@ import java.util.*;
  *
  *    Program instructions are as follows. Only valid after BEGIN_PROGRAM is seen:
  *
+ *        DECLARE: declares an instance of an object.
+ *            params: type name
+ *
  *        START_IF: begins conditional execution of the following code
  *            the next token is the condition
  *

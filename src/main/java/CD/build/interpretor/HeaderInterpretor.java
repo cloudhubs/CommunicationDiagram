@@ -20,8 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import static CD.build.token.Instruction.DEFINE_FUNC;
-import static CD.build.token.Instruction.END_DEFINE_FUNC;
+import static CD.build.token.Instruction.*;
 
 /**
  * Consumes Header tokens
@@ -83,9 +82,10 @@ public class HeaderInterpretor {
 
         // only executes for the first token consumed
         if(firstSeen){
-            if(token.getType() != Instruction.DEFINE_TYPES){
+            if(token.getType() != DEFINE_TYPES){
                 throw new BuildException("First instruction must be DEFINE_TYPES");
             }
+            lastEncounteredInstruction = DEFINE_TYPES;
             firstSeen = false;
         }
 
@@ -105,6 +105,9 @@ public class HeaderInterpretor {
 
             // definition of a function
             case DEFINE_FUNC:
+                if(this.arguments.size() < 2){
+                    throw new BuildException("usage: DEFINE_FUNC classname methodName [instruction...]");
+                }
                 String ownerClass = this.arguments.get(METHOD_CLASS_POS).toString();
                 String methodName = this.arguments.get(METHOD_NAME_POS).toString();
                 List<AbstractToken> instructions = this.arguments.subList(METHOD_FIRST_INSTRUCTION_POS, this.arguments.size());
@@ -119,12 +122,14 @@ public class HeaderInterpretor {
                 this.program_begun = true;
                 break;
 
+            default:
+                throw new BuildException("Invalid instruction before BEGIN_PROGRAM");
+
         }
         lastEncounteredInstruction = token.getType();
 
         // clear out the saved tokens
         this.arguments.clear();
-
 
         return this.program_begun;
     }

@@ -35,13 +35,15 @@ public class ProgramInterpretor {
     private int startFunctionFlag;
 
     // set if a CREATE has been seen
-    private boolean createVariableFlag;
+    private int createVariableFlag;
 
     // the class name of the method holder
-    private String objectName;
+    private String className;
 
     // the method name
     private String methodName;
+
+    private String instancenName;
 
     ///////////////////////////////////////////////////////////////////
 
@@ -51,9 +53,10 @@ public class ProgramInterpretor {
     public ProgramInterpretor(){
         ifconditionFlag = false;
         startFunctionFlag = 0;
-        createVariableFlag = false;
-        objectName = null;
+        createVariableFlag = 0;
+        className = null;
         methodName = null;
+        instancenName = null;
     }
 
     /**
@@ -80,7 +83,7 @@ public class ProgramInterpretor {
 
             // indicates that a variable is being declared
             case DECLARE:
-                createVariableFlag = true;
+                createVariableFlag = 1;
                 break;
 
             // if an if statement or an elif, the following stmt will be included as a condition
@@ -119,17 +122,26 @@ public class ProgramInterpretor {
 
             // if not one of the expected token
             case OTHER:
-                if(createVariableFlag){
-                    nodes.add(new Node(token.toString()));
+                if(createVariableFlag > 0){
+                    switch(createVariableFlag){
+                        case 1:
+                            className = token.toString();
+                            break;
+                        case 2:
+                            instancenName = token.toString();
+                            nodes.add(new Node(instancenName));
+                            createVariableFlag = 0;
+                            break;
+                    }
                 }
                 else if(ifconditionFlag){
                     currentContext.getIfStack().push(token.toString());
                     ifconditionFlag = false;
                 }
                 else if(startFunctionFlag > 0){
-                    switch(startFunctionFlag){
+                    switch(startFunctionFlag++){
                         case 1:
-                            this.objectName = token.toString();
+                            this.className = token.toString();
                             break;
                         case 2:
                             this.methodName = token.toString();
@@ -143,12 +155,14 @@ public class ProgramInterpretor {
                             ));
 
                             callStack.push(new FunctionContext());
+                            startFunctionFlag = 0;
                     }
-                    ++ startFunctionFlag;
                 }
                 break;
             case END_PROGRAM:
                 return true;
+            default:
+                throw new BuildException("Invalid token seen after BEGIN_PROGRAM");
         }
         return false;
     }
