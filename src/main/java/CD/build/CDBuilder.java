@@ -141,7 +141,13 @@ public class CDBuilder {
 
         // if in program phase feed the tokens to the program interpretor
         else{
-            programInterpretor.consume(token, callStack, sequenceNumber, nodes, edges);
+            Method m = programInterpretor.consume(token, callStack, sequenceNumber, nodes, edges, methods);
+            this.program_terminated = programInterpretor.programCompleted;
+            if(Objects.nonNull(m)){
+                for(AbstractToken mToken : m.getInstructions()){
+                    consume(mToken);
+                }
+            }
         }
     }
 

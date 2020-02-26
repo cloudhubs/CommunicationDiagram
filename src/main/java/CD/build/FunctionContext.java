@@ -27,7 +27,7 @@ public class FunctionContext {
 
     // the functionname for this level of the runtime stack
     @EqualsAndHashCode.Include
-    private String functionName;
+    private Method method;
 
     // the non active if statements
     @EqualsAndHashCode.Exclude
@@ -36,4 +36,8 @@ public class FunctionContext {
     // the current sequence number for this call
     @EqualsAndHashCode.Exclude
     private Integer seqNum = 1;
+
+    public FunctionContext(Method method) {
+        this.method = method;
+    }
 }

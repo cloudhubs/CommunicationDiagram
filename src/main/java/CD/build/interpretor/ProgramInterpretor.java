@@ -11,6 +11,7 @@
 
 package CD.build.interpretor;
 
+import CD.build.Method;
 import CD.build.token.AbstractToken;
 import CD.build.FunctionContext;
 import CD.exception.BuildException;
@@ -45,6 +46,8 @@ public class ProgramInterpretor {
 
     private String instancenName;
 
+    public boolean programCompleted;
+
     ///////////////////////////////////////////////////////////////////
 
     /**
@@ -57,6 +60,7 @@ public class ProgramInterpretor {
         className = null;
         methodName = null;
         instancenName = null;
+        programCompleted = false;
     }
 
     /**
@@ -75,7 +79,10 @@ public class ProgramInterpretor {
      * @param token the token to consume
      * @throws BuildException if invalid token
      */
-    public boolean consume(AbstractToken token, Stack<FunctionContext> callStack, StringStack sequenceNumber, Set<Node> nodes, Set<Edge> edges) throws BuildException{
+    public Method consume(
+            AbstractToken token, Stack<FunctionContext> callStack, StringStack sequenceNumber,
+            Set<Node> nodes, Set<Edge> edges, Set<Method> methods)
+            throws BuildException{
 
         FunctionContext currentContext = callStack.peek();
 
@@ -148,22 +155,24 @@ public class ProgramInterpretor {
 
                             // create an edge for this call
                             edges.add(new Edge(
-                                    null,
+                                    this.methodName,                  // the name of the edge
                                     sequenceNumber.toString(".", "", ""), // the seq number
-                                    currentContext.getFunctionName(), // the start node
+                                    currentContext.getMethod().getClassName(), // the start node
                                     this.methodName                   // the end node
                             ));
 
-                            callStack.push(new FunctionContext());
+                            Method method = methods.stream().filter(x -> x.getClassName().equals(className) && x.getMethod().equals(methodName)).findAny().get();
+                            callStack.push(new FunctionContext(method));
                             startFunctionFlag = 0;
+                            return method;
                     }
                 }
                 break;
             case END_PROGRAM:
-                return true;
+                programCompleted = true;
             default:
                 throw new BuildException("Invalid token seen after BEGIN_PROGRAM");
         }
-        return false;
+        return null;
     }
 }
