@@ -87,34 +87,49 @@ import java.util.*;
 public class CDBuilder {
 
     // used to interpret tokens once the program has begun executing
-    private ProgramInterpretor programInterpretor = new ProgramInterpretor();
+    private ProgramInterpretor programInterpretor = null;
 
     // used to interpret the header of the program
-    private HeaderInterpretor headerInterpretor = new HeaderInterpretor();
+    private HeaderInterpretor headerInterpretor = null;
 
     // meant to mimic the runtime stack
-    private Stack<FunctionContext> callStack = new Stack<>();
+    private Stack<FunctionContext> callStack = null;
 
     // used to create sequence numbers of communications
-    private StringStack sequenceNumber = new StringStack();
+    private StringStack sequenceNumber = null;
 
     // the types of objects that are defined for this program
-    private Set<String> types = new HashSet<>();
+    private Set<String> types = null;
 
     // the methods defined for all objects in this program
-    private Set<Method> methods = new HashSet<>();
+    private Set<Method> methods = null;
 
     // the nodes for the communication diagram
-    private Set<Node> nodes = new HashSet<>();
+    private Set<Node> nodes = null;
 
     // the edges for the communication diagram
-    private Set<Edge> edges = new HashSet<>();
+    private Set<Edge> edges = null;
 
     // indicates that the program has begun executing
     private boolean program_begun = false;
 
     // indicates that the program has finished executing
     private boolean program_terminated = false;
+
+    public CDBuilder(){
+        Method main = new Method("this", "main", null);
+
+        programInterpretor = new ProgramInterpretor();
+        headerInterpretor = new HeaderInterpretor();
+        callStack = new Stack<>();
+        callStack.add(new FunctionContext(main));
+        sequenceNumber = new StringStack();
+        types = new HashSet<>();
+        methods = new HashSet<>();
+        methods.add(main);
+        nodes = new HashSet<>();
+        edges = new HashSet<>();
+    }
 
     /**
      * consumes a string by tokenizing by white space
@@ -171,6 +186,9 @@ public class CDBuilder {
      * @throws BuildException if a communication diagram is unable to be built
      */
     public Communication build() throws BuildException {
+        if(!this.program_terminated){
+            throw new BuildException("END_PROGRAM not encountered");
+        }
         return new Communication(this.nodes, this.edges);
     }
 }

@@ -80,10 +80,12 @@ public class HeaderInterpretor {
      */
     public boolean consume(AbstractToken token) throws BuildException{
 
-        if((firstSeen && token.getType() != DEFINE_TYPES) || (token.getType() == DEFINE_TYPES)){
+        if(firstSeen && token.getType() == DEFINE_TYPES){
+            firstSeen = false;
+            return false;
+        }else if((firstSeen && token.getType() != DEFINE_TYPES) || ( !firstSeen && token.getType() == DEFINE_TYPES)){
             throw new BuildException("DEFINE_TYPES must be the first instruction and none other");
         }
-        firstSeen = false;
 
         // if this is not an instruction or this instruction is nested within a method declaration save it as an argument
         if((token.getType() == Instruction.OTHER) || ((lastEncounteredInstruction == DEFINE_FUNC) && (token.getType() != END_DEFINE_FUNC))){

@@ -44,8 +44,10 @@ public class ProgramInterpretor {
     // the method name
     private String methodName;
 
+    // the instance name
     private String instancenName;
 
+    // indicates that END_PROGRAM has been encounterd
     public boolean programCompleted;
 
     ///////////////////////////////////////////////////////////////////

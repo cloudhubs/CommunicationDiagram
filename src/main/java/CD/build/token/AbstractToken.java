@@ -60,10 +60,8 @@ public interface AbstractToken {
                 return BEGIN_PROGRAM;
             case "END_PROGRAM":
                 return END_PROGRAM;
-            case "OTHER":
-                return new UnrecognizedToken(str);
             default:
-                throw new BuildException("Unrecognized token: " + str);
+                return new UnrecognizedToken(str);
         }
     }
 }
