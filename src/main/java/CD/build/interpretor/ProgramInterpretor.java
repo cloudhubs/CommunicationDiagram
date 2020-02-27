@@ -19,6 +19,7 @@ import CD.util.StringStack;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Edge;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Node;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 
@@ -28,6 +29,8 @@ import java.util.Stack;
 public class ProgramInterpretor {
 
     // Class variables /////////////////////////////////////////////
+
+    private Set<String> types;
 
     // set if a BEGIN_IF was the last seen token
     private boolean ifconditionFlag;
@@ -55,7 +58,8 @@ public class ProgramInterpretor {
     /**
      * default constructor
      */
-    public ProgramInterpretor(){
+    public ProgramInterpretor(Set<String> types){
+        this.types = types;
         ifconditionFlag = false;
         startFunctionFlag = 0;
         createVariableFlag = 0;
@@ -135,6 +139,11 @@ public class ProgramInterpretor {
                     switch(createVariableFlag){
                         case 1:
                             className = token.toString();
+
+                            if(!types.contains(className)){
+                                throw new BuildException("Undefined class name: " + className);
+                            }
+
                             break;
                         case 2:
                             instancenName = token.toString();
@@ -151,6 +160,10 @@ public class ProgramInterpretor {
                     switch(startFunctionFlag++){
                         case 1:
                             this.className = token.toString();
+
+                            if(nodes.stream().noneMatch(x -> x.getLabel().equals(this.className))){
+                                throw new BuildException("Instance does not exist: " + this.className);
+                            }
                             break;
                         case 2:
                             this.methodName = token.toString();
@@ -172,6 +185,7 @@ public class ProgramInterpretor {
                 break;
             case END_PROGRAM:
                 programCompleted = true;
+                break;
             default:
                 throw new BuildException("Invalid token seen after BEGIN_PROGRAM");
         }

@@ -18,8 +18,8 @@ package CD.build.token;
 public enum Instruction implements AbstractToken {
 
         DEFINE_TYPES("DEFINE_TYPES"),
-        DEFINE_FUNC("DEFINE_FUNC"),
-        END_DEFINE_FUNC("END_DEFINE_FUNC"),
+        DEFINE_FUNCTION("DEFINE_FUNCTION"),
+        END_DEFINE_FUNCTION("END_DEFINE_FUNCTION"),
         DECLARE("DECLARE"),
         CALL_FUNCTION("CALL_FUNCTION"),
         END_FUNCTION_CALL("END_FUNCTION_CALL"),

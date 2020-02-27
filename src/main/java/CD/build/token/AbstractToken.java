@@ -38,10 +38,10 @@ public interface AbstractToken {
         switch(str){
             case "DEFINE_TYPES":
                 return DEFINE_TYPES;
-            case "DEFINE_FUNC":
-                return DEFINE_FUNC;
-            case "END_DEFINE_FUNC":
-                return END_DEFINE_FUNC;
+            case "DEFINE_FUNCTION":
+                return DEFINE_FUNCTION;
+            case "END_DEFINE_FUNCTION":
+                return END_DEFINE_FUNCTION;
             case "DECLARE":
                 return DECLARE;
             case "CALL_FUNCTION":

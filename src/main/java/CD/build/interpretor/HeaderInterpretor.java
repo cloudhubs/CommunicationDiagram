@@ -88,7 +88,10 @@ public class HeaderInterpretor {
         }
 
         // if this is not an instruction or this instruction is nested within a method declaration save it as an argument
-        if((token.getType() == Instruction.OTHER) || ((lastEncounteredInstruction == DEFINE_FUNC) && (token.getType() != END_DEFINE_FUNC))){
+        if((token.getType() == Instruction.OTHER) || ((lastEncounteredInstruction == DEFINE_FUNCTION) && (token.getType() != END_DEFINE_FUNCTION))){
+            if(token.getType() == DEFINE_FUNCTION){
+                throw new BuildException("Cannot have nested DEFINE_FUNCTION");
+            }
             arguments.add(token);
             return this.program_begun;
         }
@@ -105,18 +108,24 @@ public class HeaderInterpretor {
                 break;
 
             // definition of a function
-            case DEFINE_FUNC:
+            case DEFINE_FUNCTION:
                 if(this.arguments.size() < 2){
                     throw new BuildException("usage: DEFINE_FUNC classname methodName [instruction...]");
                 }
                 String ownerClass = this.arguments.get(METHOD_CLASS_POS).toString();
+                if(!types.contains(ownerClass)){
+                    throw new BuildException("Class does not exist: " + ownerClass);
+                }
+
                 String methodName = this.arguments.get(METHOD_NAME_POS).toString();
                 List<AbstractToken> instructions = this.arguments.subList(METHOD_FIRST_INSTRUCTION_POS, this.arguments.size());
                 Method method = new Method(ownerClass, methodName, instructions);
-                this.methods.add(method);
+                if(this.methods.add(method) ){
+                    throw new BuildException("method " + methodName + "already defined for class " + ownerClass);
+                }
                 break;
 
-            case END_DEFINE_FUNC:
+            case END_DEFINE_FUNCTION:
                 break;
 
             case BEGIN_PROGRAM:
@@ -126,6 +135,10 @@ public class HeaderInterpretor {
             default:
                 throw new BuildException("Invalid instruction before BEGIN_PROGRAM");
 
+        }
+
+        if(token.getType() == BEGIN_PROGRAM){
+            this.program_begun = true;
         }
         lastEncounteredInstruction = token.getType();
 

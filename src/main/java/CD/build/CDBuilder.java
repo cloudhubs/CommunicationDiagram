@@ -119,7 +119,6 @@ public class CDBuilder {
     public CDBuilder(){
         Method main = new Method("this", "main", null);
 
-        programInterpretor = new ProgramInterpretor();
         headerInterpretor = new HeaderInterpretor();
         callStack = new Stack<>();
         callStack.add(new FunctionContext(main));
@@ -129,6 +128,7 @@ public class CDBuilder {
         methods.add(main);
         nodes = new HashSet<>();
         edges = new HashSet<>();
+        programInterpretor = new ProgramInterpretor(types);
     }
 
     /**
