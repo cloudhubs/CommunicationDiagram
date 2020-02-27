@@ -14,6 +14,7 @@ package CD.build.interpretor;
 import CD.build.Method;
 import CD.build.token.AbstractToken;
 import CD.build.FunctionContext;
+import CD.build.token.Instruction;
 import CD.exception.BuildException;
 import CD.util.StringStack;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Edge;
@@ -91,6 +92,11 @@ public class ProgramInterpretor {
             throws BuildException{
 
         FunctionContext currentContext = callStack.peek();
+
+        // see if incorrect number of params are being passed
+        if(token.getType() != Instruction.OTHER && anyFlagActive()){
+            throw new BuildException("Parameter required not instruction");
+        }
 
         switch(token.getType()){
 
@@ -190,5 +196,9 @@ public class ProgramInterpretor {
                 throw new BuildException("Invalid token seen after BEGIN_PROGRAM");
         }
         return null;
+    }
+
+    public boolean anyFlagActive(){
+        return ifconditionFlag || startFunctionFlag > 0 || createVariableFlag > 0;
     }
 }

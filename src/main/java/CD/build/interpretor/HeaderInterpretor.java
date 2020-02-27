@@ -120,7 +120,7 @@ public class HeaderInterpretor {
                 String methodName = this.arguments.get(METHOD_NAME_POS).toString();
                 List<AbstractToken> instructions = this.arguments.subList(METHOD_FIRST_INSTRUCTION_POS, this.arguments.size());
                 Method method = new Method(ownerClass, methodName, instructions);
-                if(this.methods.add(method) ){
+                if(!this.methods.add(method) ){
                     throw new BuildException("method " + methodName + "already defined for class " + ownerClass);
                 }
                 break;
