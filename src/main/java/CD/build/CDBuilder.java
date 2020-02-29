@@ -128,7 +128,7 @@ public class CDBuilder {
         methods.add(main);
         nodes = new HashSet<>();
         edges = new HashSet<>();
-        programInterpretor = new ProgramInterpretor(types);
+        programInterpretor = null;
     }
 
     /**
@@ -157,12 +157,19 @@ public class CDBuilder {
 
         // if still in the header phase feed the token to the header interprator
         if(!program_begun){
-            program_begun = headerInterpretor.consume(token);
+            Method m = headerInterpretor.consume(token);
+            program_begun = headerInterpretor.program_begun;
+
+            if(Objects.nonNull(m)){
+                if(!this.methods.add(m)){
+                    throw new BuildException("Method already declared: " + m);
+                }
+            }
 
             // if this token began the program get the necessary results
-            if(program_begun){
+            if(headerInterpretor.program_begun){
                 this.types = headerInterpretor.getTypes();
-                this.methods = headerInterpretor.getMethods();
+                programInterpretor = new ProgramInterpretor(types);
             }
         }
 

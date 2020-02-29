@@ -39,5 +39,7 @@ public class FunctionContext {
 
     public FunctionContext(Method method) {
         this.method = method;
+        this.ifStack = new StringStack();
+        this.discardedIfStack = new StringStack();
     }
 }

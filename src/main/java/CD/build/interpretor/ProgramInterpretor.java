@@ -21,6 +21,7 @@ import edu.baylor.ecs.cloudhubs.prophetdto.communication.Edge;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Node;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 
@@ -34,7 +35,7 @@ public class ProgramInterpretor {
     private Set<String> types;
 
     // set if a BEGIN_IF was the last seen token
-    private boolean ifconditionFlag;
+    private int ifconditionFlag;
 
     // counts how far away from the BEGIN_FUNCTION
     private int startFunctionFlag;
@@ -61,7 +62,7 @@ public class ProgramInterpretor {
      */
     public ProgramInterpretor(Set<String> types){
         this.types = types;
-        ifconditionFlag = false;
+        ifconditionFlag = 0;
         startFunctionFlag = 0;
         createVariableFlag = 0;
         className = null;
@@ -107,18 +108,21 @@ public class ProgramInterpretor {
 
             // if an if statement or an elif, the following stmt will be included as a condition
             case BEGIN_IF:
-                ifconditionFlag = true;
+                ifconditionFlag = 1;
                 break;
 
             // if an if statment is ending, pop the condition of the if statement from the condition
             case END_IF:
-                ifconditionFlag = false;
+                ifconditionFlag = 0;
                 String discard = currentContext.getIfStack().pop();
                 currentContext.getDiscardedIfStack().push(discard);
                 break;
 
             // for an else just negate the previous if
             case BEGIN_ELSE:
+                if(ifconditionFlag > 0){
+                    throw new BuildException("Previous if statement not ended");
+                }
                 String elseStmt = currentContext.getDiscardedIfStack().pop();
                 elseStmt = "!(" + elseStmt + ")";
                 currentContext.getIfStack().push(elseStmt);
@@ -142,7 +146,7 @@ public class ProgramInterpretor {
             // if not one of the expected token
             case OTHER:
                 if(createVariableFlag > 0){
-                    switch(createVariableFlag){
+                    switch(createVariableFlag++){
                         case 1:
                             className = token.toString();
 
@@ -153,14 +157,21 @@ public class ProgramInterpretor {
                             break;
                         case 2:
                             instancenName = token.toString();
-                            nodes.add(new Node(instancenName));
+                            //nodes.add(new Node(instancenName));
+                            nodes.add(new Node(className, instancenName));
                             createVariableFlag = 0;
                             break;
                     }
                 }
-                else if(ifconditionFlag){
-                    currentContext.getIfStack().push(token.toString());
-                    ifconditionFlag = false;
+                else if(ifconditionFlag > 0){
+                    switch(ifconditionFlag++) {
+                        case 1:
+                            currentContext.getIfStack().push(token.toString());
+                            break;
+                        default:
+                            //TODO
+                            break;
+                    }
                 }
                 else if(startFunctionFlag > 0){
                     switch(startFunctionFlag++){
@@ -182,14 +193,25 @@ public class ProgramInterpretor {
                                     this.methodName                   // the end node
                             ));
 
-                            Method method = methods.stream().filter(x -> x.getClassName().equals(className) && x.getMethod().equals(methodName)).findAny().get();
-                            callStack.push(new FunctionContext(method));
+                            // get the type of this instance
+                            String type = nodes.stream().filter(x -> x.getLabel().equals(className)).findAny().get().getId();
+
+                            Optional<Method> method = methods.stream().filter(x -> x.getClassName().equals(type) && x.getMethod().equals(methodName)).findAny();
+
+                            if(method.isEmpty()){
+                                throw new BuildException("Method does not exist of name: " + methodName);
+                            }
+
+                            callStack.push(new FunctionContext(method.get()));
                             startFunctionFlag = 0;
-                            return method;
+                            return method.get();
                     }
                 }
                 break;
             case END_PROGRAM:
+                if(callStack.size() > 1 || anyFlagActive()){
+                    throw new BuildException("Program cannot end");
+                }
                 programCompleted = true;
                 break;
             default:
@@ -199,6 +221,6 @@ public class ProgramInterpretor {
     }
 
     public boolean anyFlagActive(){
-        return ifconditionFlag || startFunctionFlag > 0 || createVariableFlag > 0;
+        return ifconditionFlag == 1 || startFunctionFlag > 0 || createVariableFlag > 0;
     }
 }

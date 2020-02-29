@@ -14,6 +14,7 @@ import CD.build.token.AbstractToken;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class Method {
 
     // the class name
@@ -37,5 +39,6 @@ public class Method {
 
     // each instruction associated with this Method in order
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<AbstractToken> instructions;
 }

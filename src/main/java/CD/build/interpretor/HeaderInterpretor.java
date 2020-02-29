@@ -15,10 +15,7 @@ import CD.build.token.Instruction;
 import CD.build.Method;
 import CD.exception.BuildException;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static CD.build.token.Instruction.*;
 
@@ -52,13 +49,10 @@ public class HeaderInterpretor {
     private Instruction lastEncounteredInstruction = DEFINE_TYPES;
 
     // set indicates that BEGIN_PROGRAM has been seen
-    private boolean program_begun = false;
+    public boolean program_begun = false;
 
     // holds all defined types
     private Set<String> types = new HashSet<>();
-
-    // holds all defined methods
-    private Set<Method> methods = new HashSet<>();
 
     //  methods  ////////////////////////////////////////////////////////////
 
@@ -78,11 +72,14 @@ public class HeaderInterpretor {
      * @param token the token to consume
      * @throws BuildException if invalid token
      */
-    public boolean consume(AbstractToken token) throws BuildException{
+    public Method consume(AbstractToken token) throws BuildException{
+
+        Method toReturn = null;
 
         if(firstSeen && token.getType() == DEFINE_TYPES){
             firstSeen = false;
-            return false;
+            this.program_begun = false;
+            return toReturn;
         }else if((firstSeen && token.getType() != DEFINE_TYPES) || ( !firstSeen && token.getType() == DEFINE_TYPES)){
             throw new BuildException("DEFINE_TYPES must be the first instruction and none other");
         }
@@ -93,7 +90,7 @@ public class HeaderInterpretor {
                 throw new BuildException("Cannot have nested DEFINE_FUNCTION");
             }
             arguments.add(token);
-            return this.program_begun;
+            return toReturn;
         }
 
         // if this token is an instruction, execute the last instruction
@@ -118,18 +115,15 @@ public class HeaderInterpretor {
                 }
 
                 String methodName = this.arguments.get(METHOD_NAME_POS).toString();
-                List<AbstractToken> instructions = this.arguments.subList(METHOD_FIRST_INSTRUCTION_POS, this.arguments.size());
-                Method method = new Method(ownerClass, methodName, instructions);
-                if(!this.methods.add(method) ){
-                    throw new BuildException("method " + methodName + "already defined for class " + ownerClass);
-                }
+
+                List<AbstractToken> instructions = new ArrayList<>(this.arguments.subList(METHOD_FIRST_INSTRUCTION_POS, this.arguments.size()));
+                toReturn = new Method(ownerClass, methodName, instructions);
                 break;
 
             case END_DEFINE_FUNCTION:
                 break;
 
             case BEGIN_PROGRAM:
-                this.program_begun = true;
                 break;
 
             default:
@@ -145,14 +139,11 @@ public class HeaderInterpretor {
         // clear out the saved tokens
         this.arguments.clear();
 
-        return this.program_begun;
+        return toReturn;
     }
 
     public Set<String> getTypes() {
         return types;
     }
 
-    public Set<Method> getMethods() {
-        return methods;
-    }
 }
