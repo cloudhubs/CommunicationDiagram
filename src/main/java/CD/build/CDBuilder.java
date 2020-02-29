@@ -136,11 +136,12 @@ public class CDBuilder {
      * @param str the string to tokenize
      * @throws BuildException
      */
-    public void consume(String str) throws BuildException{
+    public CDBuilder consume(String str) throws BuildException{
         String [] tokens = str.split("\\s+");
         for (String s : tokens){
             consume(AbstractToken.getTokenFromStr(s));
         }
+        return this;
     }
 
     /**
@@ -148,7 +149,7 @@ public class CDBuilder {
      *
      * @param token
      */
-    public void consume(AbstractToken token) throws BuildException{
+    public CDBuilder consume(AbstractToken token) throws BuildException{
 
         // if the END_PROGRAM token has been encountered no more tokens are allowed
         if(program_terminated){
@@ -183,6 +184,7 @@ public class CDBuilder {
                 }
             }
         }
+        return this;
     }
 
 
