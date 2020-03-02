@@ -95,12 +95,17 @@ public class CDBuilderTester {
     @ParameterizedTest
     @ValueSource(strings = {
             "DEFINE_TYPES foo BEGIN_PROGRAM END_PROGRAM",
-            "DEFINE_TYPES foo bar BEGIN_PROGRAM END_PROGRAM"
-           // "DEFINE_TYPES foo bar DEFINE_FUNCTION foo method "
+            "DEFINE_TYPES foo bar BEGIN_PROGRAM END_PROGRAM",
+            "DEFINE_TYPES foo bar " +
+              "DEFINE_FUNCTION foo method DECLARE bar exampleObject" +
+                    " CALL_FUNCTION exampleObject getDoc END_FUNCTION_CALL" +
+                    " END_DEFINE_FUNCTION " +
+              "DEFINE_FUNCTION bar getDoc END_DEFINE_FUNCTION " +
+              "BEGIN_PROGRAM DECLARE foo o CALL_FUNCTION o method END_FUNCTION_CALL END_PROGRAM"
     })
     public void testGoodString(String s){
         assertDoesNotThrow(() -> {
-            createCommunication(s);
+            Communication diagram = createCommunication(s);
         });
     }
 

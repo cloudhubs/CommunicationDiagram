@@ -190,7 +190,7 @@ public class ProgramInterpretor {
                                     this.methodName,                  // the name of the edge
                                     sequenceNumber.toString(".", "", ""), // the seq number
                                     currentContext.getMethod().getClassName(), // the start node
-                                    this.methodName                   // the end node
+                                    this.className                   // the end node
                             ));
 
                             // get the type of this instance
