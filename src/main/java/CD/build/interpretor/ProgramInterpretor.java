@@ -11,6 +11,7 @@
 
 package CD.build.interpretor;
 
+import CD.build.CallStack;
 import CD.build.Method;
 import CD.build.token.AbstractToken;
 import CD.build.FunctionContext;
@@ -88,7 +89,7 @@ public class ProgramInterpretor {
      * @throws BuildException if invalid token
      */
     public Method consume(
-            AbstractToken token, Stack<FunctionContext> callStack, StringStack sequenceNumber,
+            AbstractToken token, CallStack callStack,
             Set<Node> nodes, Set<Edge> edges, Set<Method> methods)
             throws BuildException{
 
@@ -187,10 +188,11 @@ public class ProgramInterpretor {
 
                             // create an edge for this call
                             edges.add(new Edge(
-                                    this.methodName,                  // the name of the edge
-                                    sequenceNumber.toString(".", "", ""), // the seq number
+                                    this.methodName,                           // the name of the edge
+                                    callStack.getSequenceNumber(),             // the seq number
+                                    currentContext.getIfStack().toString("&&", "[", "]"),
                                     currentContext.getMethod().getClassName(), // the start node
-                                    this.className                   // the end node
+                                    this.className                             // the end node
                             ));
 
                             // get the type of this instance

@@ -93,10 +93,7 @@ public class CDBuilder {
     private HeaderInterpretor headerInterpretor = null;
 
     // meant to mimic the runtime stack
-    private Stack<FunctionContext> callStack = null;
-
-    // used to create sequence numbers of communications
-    private StringStack sequenceNumber = null;
+    private CallStack callStack = null;
 
     // the types of objects that are defined for this program
     private Set<String> types = null;
@@ -117,12 +114,11 @@ public class CDBuilder {
     private boolean program_terminated = false;
 
     public CDBuilder(){
-        Method main = new Method("this", "main", null);
+        Method main = new Method("main", "main", new ArrayList<>());
 
         headerInterpretor = new HeaderInterpretor();
-        callStack = new Stack<>();
-        callStack.add(new FunctionContext(main));
-        sequenceNumber = new StringStack();
+        callStack = new CallStack();
+        callStack.push(new FunctionContext(main));
         types = new HashSet<>();
         methods = new HashSet<>();
         methods.add(main);
@@ -176,7 +172,7 @@ public class CDBuilder {
 
         // if in program phase feed the tokens to the program interpretor
         else{
-            Method m = programInterpretor.consume(token, callStack, sequenceNumber, nodes, edges, methods);
+            Method m = programInterpretor.consume(token, callStack, nodes, edges, methods);
             this.program_terminated = programInterpretor.programCompleted;
             if(Objects.nonNull(m)){
                 for(AbstractToken mToken : m.getInstructions()){

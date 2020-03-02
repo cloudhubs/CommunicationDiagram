@@ -106,6 +106,7 @@ public class CDBuilderTester {
     public void testGoodString(String s){
         assertDoesNotThrow(() -> {
             Communication diagram = createCommunication(s);
+            diagram.getEdges();
         });
     }
 
