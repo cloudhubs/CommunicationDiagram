@@ -10,6 +10,7 @@
 
 package CD.component;
 
+import CD.build.converter.JParserConverter;
 import edu.baylor.ecs.cloudhubs.jparser.component.context.AnalysisContext;
 import edu.baylor.ecs.cloudhubs.prophetdto.communication.Communication;
 import org.springframework.stereotype.Component;
@@ -32,8 +33,8 @@ public class JParserCaller implements ParserCaller{
      */
     public Communication getSystem(String systemName){
         Map<String, Object> map = new HashMap<>();
-        map.put("filePath", systemName);
+        map.put("filepath", systemName);
         AnalysisContext analysisContext = createResponseEntity(JPARSER_PARSER_URL, map, AnalysisContext.class);
-        return null;
+        return JParserConverter.convert(analysisContext);
     }
 }
